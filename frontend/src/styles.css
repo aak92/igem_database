@@ -5611,3 +5611,765 @@ body:has(.home-map-page) {
 .home-edge-label {
   opacity: 0;
 }
+
+/* Atlas dark workspace override - keeps graph interactions intact */
+.app-shell:not(.home-shell) {
+  background:
+    radial-gradient(circle at 10% 12%, rgba(186, 174, 224, 0.2), transparent 20%),
+    radial-gradient(circle at 88% 10%, rgba(153, 124, 207, 0.16), transparent 18%),
+    radial-gradient(circle at 50% 76%, rgba(255, 255, 255, 0.04), transparent 22%),
+    linear-gradient(180deg, #080814 0%, #15122a 56%, #2c2448 100%);
+  color: #f4eef8;
+}
+
+.app-shell:not(.home-shell) .sidebar {
+  background: rgba(5, 7, 13, 0.78);
+  border-right: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 18px 0 36px rgba(0, 0, 0, 0.28);
+}
+
+.app-shell:not(.home-shell) .topbar {
+  background: rgba(5, 7, 13, 0.72);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.app-shell:not(.home-shell) .brand-name,
+.app-shell:not(.home-shell) .page-heading h1,
+.app-shell:not(.home-shell) .panel-header h2,
+.app-shell:not(.home-shell) .detail-title h2,
+.app-shell:not(.home-shell) .detail-hero-copy h1,
+.app-shell:not(.home-shell) .section-title-row h3 {
+  color: #f7f3ff;
+}
+
+.app-shell:not(.home-shell) .brand-subtitle,
+.app-shell:not(.home-shell) .sidebar-section-label,
+.app-shell:not(.home-shell) .dataset-meta span,
+.app-shell:not(.home-shell) .dataset-copy span,
+.app-shell:not(.home-shell) .version-chip,
+.app-shell:not(.home-shell) .sync-state,
+.app-shell:not(.home-shell) .crumbs span,
+.app-shell:not(.home-shell) .eyebrow,
+.app-shell:not(.home-shell) .result-total,
+.app-shell:not(.home-shell) .search-toolbar,
+.app-shell:not(.home-shell) .search-summary,
+.app-shell:not(.home-shell) .panel-kicker,
+.app-shell:not(.home-shell) .node-count,
+.app-shell:not(.home-shell) .summary-row,
+.app-shell:not(.home-shell) .field-row span,
+.app-shell:not(.home-shell) .related-row small,
+.app-shell:not(.home-shell) .result-subtitle,
+.app-shell:not(.home-shell) .result-tag,
+.app-shell:not(.home-shell) .queue-kind,
+.app-shell:not(.home-shell) .detail-description,
+.app-shell:not(.home-shell) .detail-topline,
+.app-shell:not(.home-shell) .detail-title p,
+.app-shell:not(.home-shell) .muted-copy,
+.app-shell:not(.home-shell) .reference-row p,
+.app-shell:not(.home-shell) .detail-facts dt,
+.app-shell:not(.home-shell) .detail-copy-list span,
+.app-shell:not(.home-shell) .reaction-meta-grid span,
+.app-shell:not(.home-shell) .reaction-card-head p,
+.app-shell:not(.home-shell) .reaction-card-head > span,
+.app-shell:not(.home-shell) .sequence-link-group > span,
+.app-shell:not(.home-shell) .sequence-link-group small,
+.app-shell:not(.home-shell) .sequence-summary span,
+.app-shell:not(.home-shell) .home-search-empty {
+  color: rgba(240, 234, 248, 0.64);
+}
+
+.app-shell:not(.home-shell) .brand-mark,
+.app-shell:not(.home-shell) .dataset-icon {
+  background: rgba(146, 166, 202, 0.12);
+  color: #f0e7ca;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.app-shell:not(.home-shell) .nav-item,
+.app-shell:not(.home-shell) .dataset-card,
+.app-shell:not(.home-shell) .version-chip,
+.app-shell:not(.home-shell) .footer-link,
+.app-shell:not(.home-shell) .topbar-download,
+.app-shell:not(.home-shell) .topbar-secondary,
+.app-shell:not(.home-shell) .icon-button,
+.app-shell:not(.home-shell) .outline-button,
+.app-shell:not(.home-shell) .secondary-button,
+.app-shell:not(.home-shell) .primary-button,
+.app-shell:not(.home-shell) .filter-toggle,
+.app-shell:not(.home-shell) .filter-select,
+.app-shell:not(.home-shell) .search-field,
+.app-shell:not(.home-shell) .chip-button {
+  border-color: rgba(255, 255, 255, 0.1);
+  background: rgba(146, 166, 202, 0.08);
+  color: #f4eef8;
+}
+
+.app-shell:not(.home-shell) .nav-item.active,
+.app-shell:not(.home-shell) .chip-button.active {
+  background: rgba(146, 166, 202, 0.18);
+  border-color: rgba(146, 166, 202, 0.26);
+  color: #fff8e9;
+}
+
+.app-shell:not(.home-shell) .topbar-download,
+.app-shell:not(.home-shell) .primary-button {
+  background: #f0e7ca;
+  border-color: #f0e7ca;
+  color: #140f1f;
+}
+
+.app-shell:not(.home-shell) .topbar-secondary:hover,
+.app-shell:not(.home-shell) .outline-button:hover,
+.app-shell:not(.home-shell) .secondary-button:hover {
+  border-color: rgba(240, 231, 202, 0.5);
+  background: rgba(240, 231, 202, 0.12);
+}
+
+.app-shell:not(.home-shell) .content-wrap {
+  max-width: 1560px;
+}
+
+.app-shell:not(.home-shell) .page-heading {
+  align-items: end;
+  margin-bottom: 20px;
+}
+
+.app-shell:not(.home-shell) .page-heading h1 {
+  font-size: 30px;
+}
+
+.app-shell:not(.home-shell) .page-heading p {
+  max-width: 760px;
+  color: rgba(240, 234, 248, 0.7);
+  line-height: 1.65;
+}
+
+.app-shell:not(.home-shell) .section-panel,
+.app-shell:not(.home-shell) .network-panel,
+.app-shell:not(.home-shell) .detail-panel,
+.app-shell:not(.home-shell) .downloads-summary .summary-panel,
+.app-shell:not(.home-shell) .search-result,
+.app-shell:not(.home-shell) .download-row,
+.app-shell:not(.home-shell) .detail-card,
+.app-shell:not(.home-shell) .reference-row,
+.app-shell:not(.home-shell) .reaction-card,
+.app-shell:not(.home-shell) .detail-atlas-hero {
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(8, 10, 16, 0.8);
+  box-shadow: 0 18px 36px rgba(0, 0, 0, 0.22);
+  backdrop-filter: blur(16px);
+}
+
+.app-shell:not(.home-shell) .search-shell {
+  grid-template-columns: 280px minmax(0, 1fr) 368px;
+  align-items: start;
+}
+
+.app-shell:not(.home-shell) .search-sidebar {
+  display: grid;
+  gap: 16px;
+  padding: 0;
+  position: sticky;
+  top: 18px;
+}
+
+.app-shell:not(.home-shell) .search-sidebar .panel-header {
+  padding: 18px 18px 0;
+  border-bottom: 0;
+}
+
+.app-shell:not(.home-shell) .search-sidebar-stack {
+  display: grid;
+  gap: 14px;
+  padding: 0 18px;
+}
+
+.app-shell:not(.home-shell) .search-sidebar-group {
+  display: grid;
+  gap: 8px;
+}
+
+.app-shell:not(.home-shell) .search-sidebar-label {
+  color: rgba(240, 234, 248, 0.52);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0;
+}
+
+.app-shell:not(.home-shell) .sidebar-kind-group {
+  display: grid;
+  grid-template-columns: 1fr;
+}
+
+.app-shell:not(.home-shell) .sidebar-kind-group .chip-button {
+  justify-content: center;
+}
+
+.app-shell:not(.home-shell) .search-sidebar-reset {
+  margin: 0 18px 18px;
+  justify-content: center;
+}
+
+.app-shell:not(.home-shell) .search-main {
+  min-width: 0;
+  display: grid;
+  gap: 14px;
+}
+
+.app-shell:not(.home-shell) .search-hero {
+  height: 58px;
+  padding: 0 18px;
+  border-radius: 18px;
+  background: rgba(146, 166, 202, 0.12);
+  border: 1px solid rgba(146, 166, 202, 0.16);
+  box-shadow: 0 12px 26px rgba(0, 0, 0, 0.18);
+}
+
+.app-shell:not(.home-shell) .search-hero input,
+.app-shell:not(.home-shell) .search-field input {
+  color: #f7f3ff;
+}
+
+.app-shell:not(.home-shell) .search-hero input::placeholder,
+.app-shell:not(.home-shell) .search-field input::placeholder {
+  color: rgba(241, 234, 248, 0.44);
+}
+
+.app-shell:not(.home-shell) .search-toolbar {
+  justify-content: flex-start;
+}
+
+.app-shell:not(.home-shell) .result-list {
+  gap: 10px;
+}
+
+.app-shell:not(.home-shell) .search-result {
+  min-height: 92px;
+  background: rgba(9, 11, 18, 0.84);
+}
+
+.app-shell:not(.home-shell) .search-result:nth-child(2n) {
+  background: rgba(18, 16, 28, 0.84);
+}
+
+.app-shell:not(.home-shell) .search-result:hover,
+.app-shell:not(.home-shell) .search-result.selected,
+.app-shell:not(.home-shell) .download-row:hover {
+  border-color: rgba(186, 174, 224, 0.22);
+  box-shadow: 0 18px 32px rgba(0, 0, 0, 0.26);
+  transform: translateY(-1px);
+}
+
+.app-shell:not(.home-shell) .result-name,
+.app-shell:not(.home-shell) .queue-copy strong,
+.app-shell:not(.home-shell) .detail-title h2,
+.app-shell:not(.home-shell) .field-row strong,
+.app-shell:not(.home-shell) .related-row strong,
+.app-shell:not(.home-shell) .summary-row strong,
+.app-shell:not(.home-shell) .detail-facts dd,
+.app-shell:not(.home-shell) .detail-copy-list strong,
+.app-shell:not(.home-shell) .reaction-meta-grid strong,
+.app-shell:not(.home-shell) .reference-row strong,
+.app-shell:not(.home-shell) .sequence-link-group strong,
+.app-shell:not(.home-shell) .reaction-card-head strong {
+  color: #f7f3ff;
+}
+
+.app-shell:not(.home-shell) .result-description,
+.app-shell:not(.home-shell) .queue-copy small {
+  color: rgba(240, 234, 248, 0.62);
+}
+
+.app-shell:not(.home-shell) .detail-panel {
+  color: #f4eef8;
+}
+
+.app-shell:not(.home-shell) .detail-panel.empty-detail,
+.app-shell:not(.home-shell) .empty-home {
+  background: rgba(8, 10, 16, 0.62);
+}
+
+.app-shell:not(.home-shell) .structure-preview,
+.app-shell:not(.home-shell) .atom-map-wrap {
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(255, 255, 255, 0.08);
+}
+
+.app-shell:not(.home-shell) .tag,
+.app-shell:not(.home-shell) .detail-chip,
+.app-shell:not(.home-shell) .sequence-link-group a {
+  background: rgba(146, 166, 202, 0.1);
+  border-color: rgba(146, 166, 202, 0.12);
+  color: #f3eef8;
+}
+
+.app-shell:not(.home-shell) .downloads-shell {
+  grid-template-columns: minmax(0, 1fr) 320px;
+}
+
+.app-shell:not(.home-shell) .downloads-summary {
+  align-content: start;
+}
+
+.app-shell:not(.home-shell) .downloads-summary .summary-panel,
+.app-shell:not(.home-shell) .download-list {
+  background: transparent;
+}
+
+.app-shell:not(.home-shell) .download-row {
+  background: rgba(9, 11, 18, 0.84);
+}
+
+.app-shell:not(.home-shell) .queue-icon.compound,
+.app-shell:not(.home-shell) .result-icon.compound,
+.app-shell:not(.home-shell) .related-icon.compound,
+.app-shell:not(.home-shell) .detail-mark.compound {
+  background: rgba(122, 224, 196, 0.18);
+  color: #a9f0dc;
+}
+
+.app-shell:not(.home-shell) .queue-icon.enzyme,
+.app-shell:not(.home-shell) .result-icon.enzyme,
+.app-shell:not(.home-shell) .related-icon.enzyme,
+.app-shell:not(.home-shell) .detail-mark.enzyme {
+  background: rgba(255, 207, 114, 0.18);
+  color: #ffe3a2;
+}
+
+.app-shell:not(.home-shell) .topbar,
+.app-shell:not(.home-shell) .sidebar,
+.app-shell:not(.home-shell) .detail-panel,
+.app-shell:not(.home-shell) .section-panel,
+.app-shell:not(.home-shell) .search-result,
+.app-shell:not(.home-shell) .download-row,
+.app-shell:not(.home-shell) .detail-card,
+.app-shell:not(.home-shell) .detail-atlas-hero {
+  border-radius: 14px;
+}
+
+.app-shell:not(.home-shell) .enzyme-detail-page,
+.app-shell:not(.home-shell) .enzyme-atlas-page {
+  min-height: 100vh;
+  padding: 26px 30px 40px;
+  background:
+    radial-gradient(circle at 12% 10%, rgba(186, 174, 224, 0.18), transparent 24%),
+    radial-gradient(circle at 88% 8%, rgba(153, 124, 207, 0.16), transparent 18%),
+    linear-gradient(180deg, #080814 0%, #15122a 56%, #2c2448 100%);
+  color: #f4eef8;
+}
+
+.app-shell:not(.home-shell) .detail-atlas-hero,
+.app-shell:not(.home-shell) .detail-card,
+.app-shell:not(.home-shell) .reaction-card,
+.app-shell:not(.home-shell) .reference-row,
+.app-shell:not(.home-shell) .sequence-summary div,
+.app-shell:not(.home-shell) .link-list a,
+.app-shell:not(.home-shell) .sequence-link-group a {
+  border-radius: 14px;
+}
+
+.app-shell:not(.home-shell) .detail-hero-copy p,
+.app-shell:not(.home-shell) .detail-name-stack p,
+.app-shell:not(.home-shell) .reference-row p,
+.app-shell:not(.home-shell) .reaction-card-head p,
+.app-shell:not(.home-shell) .sequence-link-group small {
+  color: rgba(240, 234, 248, 0.66);
+}
+
+.app-shell:not(.home-shell) .detail-facts div,
+.app-shell:not(.home-shell) .detail-copy-list div,
+.app-shell:not(.home-shell) .reaction-meta-grid div,
+.app-shell:not(.home-shell) .sequence-summary div {
+  border-top-color: rgba(255, 255, 255, 0.08);
+}
+
+.app-shell:not(.home-shell) .detail-facts dt,
+.app-shell:not(.home-shell) .detail-copy-list span,
+.app-shell:not(.home-shell) .reaction-meta-grid span,
+.app-shell:not(.home-shell) .sequence-summary span {
+  color: rgba(240, 234, 248, 0.52);
+}
+
+.app-shell:not(.home-shell) .detail-link,
+.app-shell:not(.home-shell) .reference-row a,
+.app-shell:not(.home-shell) .link-list a,
+.app-shell:not(.home-shell) .sequence-link-group a {
+  color: #f7f3ff;
+}
+
+.app-shell:not(.home-shell) .detail-link:hover,
+.app-shell:not(.home-shell) .reference-row a:hover,
+.app-shell:not(.home-shell) .link-list a:hover,
+.app-shell:not(.home-shell) .sequence-link-group a:hover {
+  background: rgba(146, 166, 202, 0.12);
+}
+
+.app-shell:not(.home-shell) .search-sidebar .panel-header,
+.app-shell:not(.home-shell) .downloads-summary .panel-header {
+  border-bottom-color: rgba(255, 255, 255, 0.08);
+}
+
+.app-shell:not(.home-shell) .search-sidebar .panel-header h2,
+.app-shell:not(.home-shell) .downloads-summary .panel-header h2 {
+  font-size: 22px;
+  font-weight: 400;
+}
+
+.app-shell:not(.home-shell) .summary-row {
+  border-color: rgba(255, 255, 255, 0.08);
+}
+
+.app-shell:not(.home-shell) .search-summary span {
+  color: rgba(240, 234, 248, 0.54);
+}
+
+.app-shell:not(.home-shell) .search-sidebar .filter-select,
+.app-shell:not(.home-shell) .search-sidebar .filter-toggle {
+  background: rgba(146, 166, 202, 0.08);
+}
+
+.app-shell:not(.home-shell) .downloads-sidebar {
+  display: grid;
+  gap: 14px;
+  padding: 0;
+  align-content: start;
+}
+
+.app-shell:not(.home-shell) .downloads-sidebar .panel-header {
+  padding: 18px 18px 0;
+  border-bottom: 0;
+}
+
+.app-shell:not(.home-shell) .downloads-option-group {
+  display: grid;
+  gap: 10px;
+  padding: 0 18px;
+}
+
+.app-shell:not(.home-shell) .downloads-option-label {
+  color: rgba(240, 234, 248, 0.52);
+  font-size: 10px;
+  text-transform: uppercase;
+}
+
+.app-shell:not(.home-shell) .downloads-format-list,
+.app-shell:not(.home-shell) .downloads-columns-list {
+  display: grid;
+  gap: 8px;
+}
+
+.app-shell:not(.home-shell) .downloads-format-item,
+.app-shell:not(.home-shell) .downloads-column-item {
+  min-height: 42px;
+  padding: 0 14px;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(146, 166, 202, 0.08);
+  color: #f4eef8;
+  text-align: left;
+}
+
+.app-shell:not(.home-shell) .download-submit-pill {
+  margin: 2px 18px 18px;
+  min-height: 46px;
+  border-radius: 24px;
+  border: 1px solid #f0e7ca;
+  background: #f0e7ca;
+  color: #140f1f;
+}
+
+.app-shell:not(.home-shell) .downloads-main {
+  min-width: 0;
+  display: grid;
+  gap: 12px;
+}
+
+.app-shell:not(.home-shell) .downloads-tabbar {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 6px;
+}
+
+.app-shell:not(.home-shell) .downloads-tabbar button {
+  min-height: 58px;
+  border-radius: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(8, 10, 16, 0.84);
+  color: #f4eef8;
+  font-size: 15px;
+}
+
+.app-shell:not(.home-shell) .downloads-tabbar button span {
+  margin-left: 12px;
+  color: rgba(240, 234, 248, 0.66);
+}
+
+.app-shell:not(.home-shell) .downloads-tabbar button.active {
+  background: rgba(60, 37, 104, 0.72);
+  border-color: rgba(146, 166, 202, 0.24);
+}
+
+.app-shell:not(.home-shell) .downloads-panel-group {
+  display: grid;
+  gap: 12px;
+}
+
+.app-shell:not(.home-shell) .downloads-panel-group .empty-home {
+  min-height: 240px;
+  display: grid;
+  place-items: center;
+}
+
+.app-shell:not(.home-shell) .downloads-panel-group .download-row {
+  background: rgba(12, 13, 21, 0.84);
+}
+
+.app-shell:not(.home-shell) .enzyme-detail-page {
+  background:
+    radial-gradient(circle at 12% 10%, rgba(186, 174, 224, 0.18), transparent 24%),
+    radial-gradient(circle at 88% 8%, rgba(153, 124, 207, 0.16), transparent 18%),
+    linear-gradient(180deg, #080814 0%, #15122a 56%, #2c2448 100%);
+  color: #f4eef8;
+}
+
+.app-shell:not(.home-shell) .detail-atlas-hero {
+  border-radius: 14px;
+  padding: 20px 22px;
+}
+
+.app-shell:not(.home-shell) .detail-atlas-hero p,
+.app-shell:not(.home-shell) .detail-name-stack p {
+  color: rgba(240, 234, 248, 0.7);
+}
+
+.app-shell:not(.home-shell) .detail-card {
+  border-radius: 14px;
+  background: rgba(8, 10, 16, 0.8);
+}
+
+.app-shell:not(.home-shell) .detail-chip {
+  background: rgba(146, 166, 202, 0.1);
+  color: #f7f3ff;
+}
+
+.app-shell:not(.home-shell) .reaction-card {
+  background: rgba(12, 13, 21, 0.86);
+}
+
+.app-shell:not(.home-shell) .atom-map-wrap img {
+  border-radius: 10px;
+}
+
+.app-shell:not(.home-shell) .sequence-link-group a {
+  justify-content: space-between;
+}
+
+.app-shell:not(.home-shell) .downloads-shell {
+  align-items: start;
+}
+
+.app-shell:not(.home-shell) .downloads-sidebar,
+.app-shell:not(.home-shell) .downloads-summary {
+  position: sticky;
+  top: 18px;
+}
+
+.app-shell:not(.home-shell) .downloads-main.section-panel {
+  padding: 18px;
+}
+
+.app-shell:not(.home-shell) .downloads-main {
+  align-self: start;
+}
+
+.app-shell:not(.home-shell) .downloads-tabbar {
+  margin-bottom: 2px;
+}
+
+.app-shell:not(.home-shell) .downloads-panel-group {
+  gap: 10px;
+}
+
+.app-shell:not(.home-shell) .downloads-summary .summary-panel {
+  padding: 18px;
+}
+
+.app-shell:not(.home-shell) .downloads-summary .summary-actions {
+  display: grid;
+  gap: 10px;
+}
+
+.app-shell:not(.home-shell) .download-row {
+  gap: 12px;
+  padding: 14px 16px;
+}
+
+.app-shell:not(.home-shell) .queue-copy strong {
+  font-size: 14px;
+}
+
+.app-shell:not(.home-shell) .queue-kind {
+  margin-left: auto;
+}
+
+.app-shell:not(.home-shell) .detail-panel {
+  padding: 18px;
+  background: rgba(8, 10, 16, 0.82);
+}
+
+.app-shell:not(.home-shell) .detail-panel.empty-detail {
+  min-height: 420px;
+  display: grid;
+  place-items: center;
+  gap: 10px;
+  text-align: center;
+}
+
+.app-shell:not(.home-shell) .entity-type {
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(146, 166, 202, 0.08);
+  color: #f7f3ff;
+}
+
+.app-shell:not(.home-shell) .detail-topline {
+  margin-bottom: 14px;
+}
+
+.app-shell:not(.home-shell) .detail-title {
+  margin-bottom: 14px;
+}
+
+.app-shell:not(.home-shell) .detail-title h2 {
+  font-size: 28px;
+  line-height: 1.12;
+}
+
+.app-shell:not(.home-shell) .detail-title p {
+  font-size: 14px;
+}
+
+.app-shell:not(.home-shell) .detail-description {
+  margin-bottom: 14px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  color: rgba(240, 234, 248, 0.74);
+}
+
+.app-shell:not(.home-shell) .field-list {
+  margin-top: 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.app-shell:not(.home-shell) .field-row {
+  border-bottom-color: rgba(255, 255, 255, 0.08);
+}
+
+.app-shell:not(.home-shell) .field-row span {
+  color: rgba(240, 234, 248, 0.5);
+}
+
+.app-shell:not(.home-shell) .related-section {
+  margin-top: 14px;
+}
+
+.app-shell:not(.home-shell) .section-title {
+  color: rgba(240, 234, 248, 0.52);
+}
+
+.app-shell:not(.home-shell) .related-count {
+  background: rgba(240, 231, 202, 0.18);
+  color: #f0e7ca;
+}
+
+.app-shell:not(.home-shell) .related-row {
+  margin-top: 8px;
+  padding: 10px 12px;
+  border-top-color: transparent;
+  border-radius: 12px;
+  background: rgba(146, 166, 202, 0.06);
+}
+
+.app-shell:not(.home-shell) .related-row:hover {
+  background: rgba(146, 166, 202, 0.12);
+}
+
+.app-shell:not(.home-shell) .related-row strong {
+  color: #f7f3ff;
+}
+
+.app-shell:not(.home-shell) .related-row small,
+.app-shell:not(.home-shell) .related-row > svg {
+  color: rgba(240, 234, 248, 0.52);
+}
+
+.app-shell:not(.home-shell) .preview-link {
+  color: #f0e7ca;
+}
+
+.app-shell:not(.home-shell) .preview-link:hover {
+  color: #fff3d3;
+}
+
+.app-shell:not(.home-shell) .detail-actions {
+  padding-top: 14px;
+}
+
+.app-shell:not(.home-shell) .detail-card .section-title-row h3 {
+  font-size: 21px;
+}
+
+.app-shell:not(.home-shell) .amino-sequence-view {
+  border-color: rgba(255, 255, 255, 0.08);
+  background: rgba(12, 13, 21, 0.84);
+}
+
+.app-shell:not(.home-shell) .sequence-summary div {
+  background: rgba(146, 166, 202, 0.08);
+}
+
+.app-shell:not(.home-shell) .sequence-line code {
+  color: #f7f3ff;
+}
+
+.app-shell:not(.home-shell) .reference-row,
+.app-shell:not(.home-shell) .link-list a {
+  background: rgba(146, 166, 202, 0.06);
+}
+
+.app-shell:not(.home-shell) .reference-links a {
+  background: rgba(146, 166, 202, 0.1);
+}
+
+@media (max-width: 1080px) {
+  .app-shell:not(.home-shell) .downloads-shell {
+    grid-template-columns: 1fr;
+  }
+
+  .app-shell:not(.home-shell) .downloads-sidebar,
+  .app-shell:not(.home-shell) .downloads-summary {
+    position: static;
+  }
+}
+
+@media (max-width: 760px) {
+  .app-shell:not(.home-shell) .downloads-main.section-panel,
+  .app-shell:not(.home-shell) .detail-panel {
+    padding: 16px;
+  }
+
+  .app-shell:not(.home-shell) .downloads-tabbar {
+    grid-template-columns: 1fr;
+  }
+
+  .app-shell:not(.home-shell) .download-row {
+    flex-wrap: wrap;
+  }
+
+  .app-shell:not(.home-shell) .queue-kind {
+    margin-left: 0;
+  }
+
+  .app-shell:not(.home-shell) .detail-title h2 {
+    font-size: 24px;
+  }
+}

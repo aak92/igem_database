@@ -681,8 +681,8 @@ function SearchView({
             <Search size={14} />
             Library search
           </div>
-          <h1>Search records</h1>
-          <p>Search by name, identifier, species, family, or keyword and inspect the matching record on the right.</p>
+          <h1>Table search</h1>
+          <p>Use the filters at left to narrow the table, scan matches in the center, and inspect one record on the right.</p>
         </div>
         <div className="heading-actions">
           <span className="result-total">{filteredEntities.length} results</span>
@@ -694,6 +694,48 @@ function SearchView({
       </section>
 
       <section className="search-shell">
+        <aside className="search-sidebar section-panel">
+          <div className="panel-header">
+            <div>
+              <div className="panel-kicker">
+                <span className="live-line" />
+                Searching filters
+              </div>
+              <h2>Refine results</h2>
+            </div>
+          </div>
+
+          <div className="search-sidebar-stack">
+            <div className="search-sidebar-group">
+              <div className="search-sidebar-label">Record type</div>
+              <div className="search-kind-group sidebar-kind-group">
+                {(['all', 'compound', 'enzyme', 'reaction'] as const).map((kind) => (
+                  <button key={kind} className={`chip-button ${searchKind === kind ? 'active' : ''}`} onClick={() => setSearchKind(kind)}>
+                    {kind === 'all' ? 'All types' : kindLabels[kind]}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <div className="search-sidebar-group">
+              <FilterSelect label="Species" value={selectedSpecies} options={filterOptions.species} onChange={setSelectedSpecies} />
+            </div>
+
+            <div className="search-sidebar-group">
+              <FilterSelect label="Compound class" value={selectedClass} options={filterOptions.classes} onChange={setSelectedClass} />
+            </div>
+
+            <div className="search-sidebar-group">
+              <FilterSelect label="Enzyme family" value={selectedFamily} options={filterOptions.families} onChange={setSelectedFamily} />
+            </div>
+          </div>
+
+          <button className="outline-button search-sidebar-reset" onClick={clearFilters}>
+            <RefreshCw size={15} />
+            Clear filters
+          </button>
+        </aside>
+
         <div className="search-main">
           <div className="search-hero">
             <Search size={20} />
@@ -707,23 +749,10 @@ function SearchView({
           </div>
 
           <div className="search-toolbar">
-            <div className="search-kind-group">
-              {(['all', 'compound', 'enzyme', 'reaction'] as const).map((kind) => (
-                <button key={kind} className={`chip-button ${searchKind === kind ? 'active' : ''}`} onClick={() => setSearchKind(kind)}>
-                  {kind === 'all' ? 'All types' : kindLabels[kind]}
-                </button>
-              ))}
-            </div>
             <div className="search-summary">
               {apiSearchLoading ? 'Searching backend...' : <>Showing <strong>{filteredEntities.length}</strong> curated entries</>}
               {apiSearchError && <span>{apiSearchError}</span>}
             </div>
-          </div>
-
-          <div className="filter-row search-filter-row">
-            <FilterSelect label="Species" value={selectedSpecies} options={filterOptions.species} onChange={setSelectedSpecies} />
-            <FilterSelect label="Compound class" value={selectedClass} options={filterOptions.classes} onChange={setSelectedClass} />
-            <FilterSelect label="Enzyme family" value={selectedFamily} options={filterOptions.families} onChange={setSelectedFamily} />
           </div>
 
           <div className="result-list">
@@ -777,6 +806,9 @@ function DownloadsView({
     enzyme: downloadedItems.filter((item) => item.kind === 'enzyme').length,
     reaction: downloadedItems.filter((item) => item.kind === 'reaction').length,
   }
+  const [activeTab, setActiveTab] = useState<'enzymes' | 'pathways'>('enzymes')
+  const enzymeItems = downloadedItems.filter((item) => item.kind === 'enzyme')
+  const pathwayItems = downloadedItems.filter((item) => item.kind !== 'enzyme')
 
   return (
     <div className="content-wrap downloads-page">
@@ -786,8 +818,8 @@ function DownloadsView({
             <Download size={14} />
             Saved output
           </div>
-          <h1>Download queue</h1>
-          <p>Collect records here, export them to CSV, or remove anything you no longer need.</p>
+          <h1>Downloading table</h1>
+          <p>Collect selected records here, then export them when the queue is ready.</p>
         </div>
         <div className="heading-actions">
           <button className="outline-button" onClick={exportQueue} disabled={downloadedItems.length === 0}>
@@ -802,26 +834,91 @@ function DownloadsView({
       </section>
 
       <section className="downloads-shell">
-        <div className="section-panel">
+        <aside className="downloads-sidebar section-panel">
           <div className="panel-header">
             <div>
               <div className="panel-kicker">
                 <span className="live-line" />
-                Queue contents
+                Downloading options
               </div>
-              <h2>{downloadedItems.length} queued records</h2>
+              <h2>Export setup</h2>
             </div>
-            <button className="icon-button" title="Open search" onClick={onOpenSearch}>
-              <Search size={17} />
+          </div>
+
+          <div className="downloads-option-group">
+            <div className="downloads-option-label">Format</div>
+            <div className="downloads-format-list">
+              {['FASTA', 'TSV', 'TXT', 'XLSX'].map((format) => (
+                <button key={format} type="button" className="downloads-format-item" onClick={() => void exportQueue()}>
+                  {format}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div className="downloads-option-group">
+            <div className="downloads-option-label">Custom columns</div>
+            <div className="downloads-columns-list">
+              {['ID', 'Name', 'Subtitle', 'Species', 'Tags', 'Description'].map((column) => (
+                <button key={column} type="button" className="downloads-column-item">
+                  {column}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <button className="download-submit-pill" onClick={exportQueue} disabled={downloadedItems.length === 0}>
+            Download archive
+          </button>
+        </aside>
+
+        <div className="downloads-main section-panel">
+          <div className="downloads-tabbar">
+            <button type="button" className={activeTab === 'enzymes' ? 'active' : ''} onClick={() => setActiveTab('enzymes')}>
+              Enzymes <span>({enzymeItems.length} chosen)</span>
+            </button>
+            <button type="button" className={activeTab === 'pathways' ? 'active' : ''} onClick={() => setActiveTab('pathways')}>
+              Pathways <span>({pathwayItems.length} chosen)</span>
             </button>
           </div>
 
-          {downloadedItems.length > 0 ? (
-            <div className="download-list">
-              {downloadedItems.map((entity) => {
+          <div className="downloads-panel-group">
+            {activeTab === 'enzymes' ? (
+              enzymeItems.length > 0 ? (
+                enzymeItems.map((entity) => {
+                  const Icon = kindIcons[entity.kind]
+                  return (
+                    <article key={entity.id} className="download-row">
+                      <span className={`queue-icon ${entity.kind}`}>
+                        <Icon size={15} />
+                      </span>
+                      <span className="queue-copy">
+                        <strong>{entity.name}</strong>
+                        <small>{entity.subtitle}</small>
+                      </span>
+                      <span className="queue-kind">{kindLabels[entity.kind]}</span>
+                      <button className="icon-button" title="Open record" onClick={() => openRecord(entity)}>
+                        <ExternalLink size={15} />
+                      </button>
+                      <button className="icon-button" title="Open in network" onClick={() => onOpenEntity(entity.id)}>
+                        <ArrowUpRight size={15} />
+                      </button>
+                      <button className="icon-button" title="Remove from queue" onClick={() => removeFromQueue(entity.id)}>
+                        <X size={15} />
+                      </button>
+                    </article>
+                  )
+                })
+              ) : (
+                <div className="empty-home">
+                  <p>No enzyme records yet.</p>
+                </div>
+              )
+            ) : pathwayItems.length > 0 ? (
+              pathwayItems.map((entity) => {
                 const Icon = kindIcons[entity.kind]
                 return (
-                  <article key={entity.id} className="download-row">
+                  <article key={entity.id} className={`download-row ${entity.kind}`}>
                     <span className={`queue-icon ${entity.kind}`}>
                       <Icon size={15} />
                     </span>
@@ -833,25 +930,18 @@ function DownloadsView({
                     <button className="icon-button" title="Open record" onClick={() => openRecord(entity)}>
                       <ExternalLink size={15} />
                     </button>
-                    <button className="icon-button" title="Open in network" onClick={() => onOpenEntity(entity.id)}>
-                      <ArrowUpRight size={15} />
-                    </button>
                     <button className="icon-button" title="Remove from queue" onClick={() => removeFromQueue(entity.id)}>
                       <X size={15} />
                     </button>
                   </article>
                 )
-              })}
-            </div>
-          ) : (
-            <div className="empty-home">
-              <p>The queue is empty.</p>
-              <button className="secondary-button" onClick={onOpenNetwork}>
-                <Network size={15} />
-                Back to atlas
-              </button>
-            </div>
-          )}
+              })
+            ) : (
+              <div className="empty-home">
+                <p>No pathway records yet.</p>
+              </div>
+            )}
+          </div>
         </div>
 
         <aside className="downloads-summary">
