@@ -38,6 +38,7 @@ async def get_reaction_detail(
             chebi_id=cpd.chebi_id,
             smiles=cpd.smiles,
             average_mass=float(cpd.average_mass) if cpd.average_mass else None,
+            inchi_key=cpd.inchi_key,
             chebi_url=cpd.chebi_url,
             structure_image_url=cpd.structure_image_url,
         )

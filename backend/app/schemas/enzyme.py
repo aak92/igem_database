@@ -41,6 +41,22 @@ class ExternalLink(CamelModel):
     url: str
 
 
+class GoTerm(CamelModel):
+    go_id: Optional[str] = None
+    go_term: Optional[str] = None
+    go_url: Optional[str] = None
+
+
+class IsoformSequence(CamelModel):
+    isoform_id: Optional[str] = None
+    isoform_length: Optional[int] = None
+    isoform_mass: Optional[str] = None
+    canonical_sequence: Optional[str] = None
+    canonical_length: Optional[int] = None
+    canonical_mass: Optional[str] = None
+    sequence: Optional[str] = None
+
+
 class EnzymeDetail(CamelModel):
     enzyme_id: str
     database_code: str
@@ -54,6 +70,8 @@ class EnzymeDetail(CamelModel):
     mass: Optional[float] = None
     gene: Optional[GeneSummary] = None
     sequence_links: List[SequenceLink] = []
+    go_terms: List[GoTerm] = []
+    isoforms: List[IsoformSequence] = []
     reactions: List[EnzymeReactionItem] = []
     evidence: List[EvidenceItem] = []
     links: List[ExternalLink] = []

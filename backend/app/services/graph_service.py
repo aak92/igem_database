@@ -466,6 +466,7 @@ def _compound_to_card(c: Compound) -> CompoundCard:
         charge=float(c.charge) if c.charge else None,
         average_mass=float(c.average_mass) if c.average_mass else None,
         inchi=c.inchi,
+        inchi_key=c.inchi_key,
         structure_image_url=c.structure_image_url,
         chebi_url=c.chebi_url,
         description=c.description,

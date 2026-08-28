@@ -8,6 +8,7 @@ engine = create_engine(DB_URL)
 RHEA_FILE = f"{DATA_DIR}/for_enzyme_detail/child_tables/uniprotkb_rhea.tsv"
 TERPENE_COMPOUNDS_FILE = f"{DATA_DIR}/for_compound_card/uniprotkb_terpene_compounds.tsv"
 GRAPH_NODES_FILE = f"{DATA_DIR}/for_graph/all_nodes.tsv"
+EXCLUDED_COMMON_COMPOUND_IDS = {"CHEBI:15377", "CHEBI:15378", "CHEBI:33019"}
 
 
 def parse_chebi_ids(chebi_str):
@@ -36,7 +37,7 @@ def load_allowed_compound_ids():
             for cid in df["ChEBI ID"].dropna()
             if str(cid).strip()
         )
-    return allowed
+    return allowed - EXCLUDED_COMMON_COMPOUND_IDS
 
 
 def load_reactions():

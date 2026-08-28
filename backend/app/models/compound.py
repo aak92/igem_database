@@ -17,6 +17,7 @@ class Compound(Base):
     average_mass: Mapped[Optional[float]] = mapped_column(DECIMAL(12, 4))
     smiles: Mapped[Optional[str]] = mapped_column(Text)
     inchi: Mapped[Optional[str]] = mapped_column(Text)
+    inchi_key: Mapped[Optional[str]] = mapped_column(String(100))
     structure_image_url: Mapped[Optional[str]] = mapped_column(String(500))
     chebi_url: Mapped[Optional[str]] = mapped_column(String(500))
     description: Mapped[Optional[str]] = mapped_column(String(1000))

@@ -11,7 +11,7 @@ class GeneSequenceLink(Base):
 
     sequence_link_id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
     enzyme_id: Mapped[str] = mapped_column(String(20), ForeignKey("enzyme.enzyme_id"), nullable=False)
-    link_category: Mapped[str] = mapped_column(String(40), nullable=False)
+    link_category: Mapped[str] = mapped_column(String(80), nullable=False)
     accession: Mapped[str] = mapped_column(String(80), nullable=False)
     url: Mapped[Optional[str]] = mapped_column(String(500))
     related_accession: Mapped[Optional[str]] = mapped_column(String(80))

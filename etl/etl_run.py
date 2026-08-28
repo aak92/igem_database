@@ -9,13 +9,15 @@ import etl_enzymes
 import etl_reactions
 import etl_edges
 import etl_master
+import etl_search_index
 
 STEPS = [
-    ("1/5 compounds", etl_compounds.run),
-    ("2/5 enzymes", etl_enzymes.run),
-    ("3/5 reactions", etl_reactions.run),
-    ("4/5 edges", etl_edges.run),
-    ("5/5 master (sequence + gene + evidence)", etl_master.run),
+    ("1/6 compounds", etl_compounds.run),
+    ("2/6 enzymes", etl_enzymes.run),
+    ("3/6 reactions", etl_reactions.run),
+    ("4/6 edges", etl_edges.run),
+    ("5/6 master (sequence + gene + evidence + GO + isoforms)", etl_master.run),
+    ("6/6 search index", etl_search_index.run),
 ]
 
 if __name__ == "__main__":

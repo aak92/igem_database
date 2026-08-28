@@ -15,6 +15,7 @@ from sqlalchemy import select
 from app.models import (
     Enzyme, Gene, Reaction, Compound, Evidence, EnzymeReactionEdge, ReactionCompound
 )
+from app.utils.compound_filters import displayable_compound_filters
 
 DOWNLOADS_DIR = os.path.join(os.path.dirname(__file__), "..", "downloads")
 
@@ -33,12 +34,18 @@ FIELD_MAP: Dict[str, dict] = {
     "smiles":            {"table": "reaction", "column": "smiles",          "label": "SMILES"},
     "chebiId":           {"table": "compound", "column": "chebi_id",        "label": "ChEBI ID"},
     "averageMass":       {"table": "compound", "column": "average_mass",    "label": "Average Mass"},
+    "inchiKey":          {"table": "compound", "column": "inchi_key",        "label": "InChI Key"},
     "geneName":          {"table": "gene",     "column": "gene_name",       "label": "Gene Name"},
     "genbankId":         {"table": "gene",     "column": "genbank_id",      "label": "GenBank ID"},
     "enaAccession":      {"table": "gene",     "column": "ena_accession",   "label": "ENA Accession"},
     "proteinAccession":  {"table": "gene",     "column": "protein_accession","label": "Protein Accession"},
     "doi":               {"table": "evidence", "column": "doi",             "label": "DOI"},
     "pubmedId":          {"table": "evidence", "column": "pubmed_id",       "label": "PubMed ID"},
+    "referenceTitle":    {"table": "evidence", "column": "title",           "label": "Reference Title"},
+    "referenceAuthors":  {"table": "evidence", "column": "authors",         "label": "Reference Authors"},
+    "journal":           {"table": "evidence", "column": "journal",         "label": "Journal"},
+    "publicationYear":   {"table": "evidence", "column": "publication_year","label": "Publication Year"},
+    "referenceUrl":      {"table": "evidence", "column": "url",             "label": "Reference URL"},
     "sourceType":        {"table": "enzyme",   "column": "source_type",     "label": "Source Type"},
     "reviewStatus":      {"table": "enzyme",   "column": "review_status",   "label": "Review Status"},
 }
@@ -164,6 +171,7 @@ async def _fetch_entry_data(
             select(ReactionCompound, Compound)
             .join(Compound, ReactionCompound.compound_id == Compound.compound_id)
             .where(ReactionCompound.reaction_id.in_(reaction_ids))
+            .where(*displayable_compound_filters())
         )
         for rc, cpd in cpd_result:
             if rc.reaction_id not in reaction_compounds:

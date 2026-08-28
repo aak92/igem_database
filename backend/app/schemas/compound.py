@@ -13,6 +13,7 @@ class CompoundCard(CamelModel):
     average_mass: Optional[float] = None
     smiles: Optional[str] = None
     inchi: Optional[str] = None
+    inchi_key: Optional[str] = None
     structure_image_url: Optional[str] = None
     chebi_url: Optional[str] = None
     description: Optional[str] = None

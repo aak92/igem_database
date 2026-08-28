@@ -31,6 +31,7 @@ async def get_compound_card(
         charge=float(cpd.charge) if cpd.charge else None,
         average_mass=float(cpd.average_mass) if cpd.average_mass else None,
         inchi=cpd.inchi,
+        inchi_key=cpd.inchi_key,
         structure_image_url=cpd.structure_image_url,
         chebi_url=cpd.chebi_url,
         description=cpd.description,

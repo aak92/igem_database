@@ -54,7 +54,7 @@ npm run dev
 
 ```
 igem_database/
-├── sql/schema.sql              # MySQL 建表脚本（8 张表）
+├── sql/schema.sql              # MySQL 建表脚本（核心表 + 原始数据索引表）
 ├── database 1st data/          # 原始 TSV 数据（UniProt、Rhea、ChEBI）
 ├── etl/                        # ETL 脚本：TSV → MySQL
 │   ├── config.py               # 数据库连接配置
@@ -65,7 +65,7 @@ igem_database/
 │   │   ├── main.py             # 应用入口 + 路由注册
 │   │   ├── config.py           # 配置（数据库、BLAST）
 │   │   ├── database.py         # SQLAlchemy 异步引擎
-│   │   ├── models/             # ORM 模型（8 张表）
+│   │   ├── models/             # ORM 模型
 │   │   ├── schemas/            # Pydantic DTO
 │   │   ├── routers/            # API 路由（/api/v1/...）
 │   │   ├── services/           # 业务逻辑
@@ -97,17 +97,21 @@ igem_database/
 
 ---
 
-## MySQL 数据表（8 张）
+## MySQL 数据表
 
 | 表名                   | 行数    | 说明                          |
 |------------------------|--------|-------------------------------|
-| `compound`             | ~900+  | 化合物节点（ChEBI）            |
+| `compound`             | ~600+  | 化合物节点（ChEBI，过滤通用小分子） |
 | `enzyme`               | ~996   | 酶静态属性                     |
 | `gene`                 | ~1000+ | 酶的基因链接                   |
+| `gene_sequence_link`   | ~1000+ | INSDC/RefSeq 外部序列链接      |
 | `reaction`             | ~628   | 反应事实（Rhea）               |
 | `reaction_compound`    | ~2700  | 底物/产物关系                  |
 | `enzyme_reaction_edge` | ~2400  | 图中边（酶 ↔ 反应）            |
-| `evidence`             | ~4000+ | 文献证据（DOI/PubMed）          |
+| `evidence`             | ~4000+ | 文献证据（DOI/PubMed/题名/期刊等） |
+| `enzyme_go`            | ~2600+ | GO 注释                        |
+| `enzyme_isoform`       | ~50+   | 同工型/可变 isoform 序列        |
+| `search_index`         | 动态    | 聚合所有 TSV 字段的后端检索索引 |
 | `pathway_cache`        | 空     | 通路结果缓存                   |
 
 ---

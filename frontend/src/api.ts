@@ -17,6 +17,7 @@ type CompoundCard = {
   averageMass?: number | null
   smiles?: string | null
   inchi?: string | null
+  inchiKey?: string | null
   structureImageUrl?: string | null
   chebiUrl?: string | null
   description?: string | null
@@ -430,6 +431,7 @@ export type HomeGraphCompound = {
   averageMass?: number | null
   smiles?: string | null
   inchi?: string | null
+  inchiKey?: string | null
   structureImageUrl?: string | null
   chebiUrl?: string | null
   description?: string | null
@@ -499,8 +501,33 @@ export type EnzymeSequenceLink = {
 export type EnzymeEvidenceDetail = {
   doi?: string | null
   pubmedId?: string | null
+  title?: string | null
+  authors?: string | null
+  journal?: string | null
+  volume?: string | null
+  pages?: string | null
+  publicationYear?: number | null
+  referenceType?: string | null
+  positions?: string | null
+  url?: string | null
   sourceDescription?: string | null
   reviewStatus?: string | null
+}
+
+export type EnzymeGoTerm = {
+  goId?: string | null
+  goTerm?: string | null
+  goUrl?: string | null
+}
+
+export type EnzymeIsoformSequence = {
+  isoformId?: string | null
+  isoformLength?: number | null
+  isoformMass?: string | null
+  canonicalSequence?: string | null
+  canonicalLength?: number | null
+  canonicalMass?: string | null
+  sequence?: string | null
 }
 
 export type EnzymeReactionDetail = {
@@ -531,6 +558,8 @@ export type EnzymeDetailData = {
   mass?: number | null
   gene?: EnzymeGeneDetail | null
   sequenceLinks: EnzymeSequenceLink[]
+  goTerms: EnzymeGoTerm[]
+  isoforms: EnzymeIsoformSequence[]
   reactions: EnzymeReactionDetail[]
   evidence: EnzymeEvidenceDetail[]
   links: Array<{ label: string; url: string }>

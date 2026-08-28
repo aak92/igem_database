@@ -4,9 +4,12 @@ from sqlalchemy import select, text
 from sqlalchemy.exc import ProgrammingError, OperationalError
 
 from app.deps import get_db
-from app.models import Enzyme, Gene, GeneSequenceLink, Evidence, EnzymeReactionEdge, Reaction, ReactionCompound, Compound
+from app.models import (
+    Enzyme, Gene, GeneSequenceLink, EnzymeGoTerm, EnzymeIsoform, Evidence,
+    EnzymeReactionEdge, Reaction, ReactionCompound, Compound,
+)
 from app.schemas.common import ApiResponse
-from app.schemas.enzyme import EnzymeDetail, EnzymeReactionItem, ExternalLink
+from app.schemas.enzyme import EnzymeDetail, EnzymeReactionItem, ExternalLink, GoTerm, IsoformSequence
 from app.schemas.gene import GeneSummary, SequenceLink
 from app.schemas.evidence import EvidenceItem
 from app.schemas.compound import CompoundCard
@@ -78,10 +81,51 @@ async def get_enzyme_detail(
         EvidenceItem(
             doi=e.doi,
             pubmed_id=e.pubmed_id,
+            title=e.title,
+            authors=e.authors,
+            journal=e.journal,
+            volume=e.volume,
+            pages=e.pages,
+            publication_year=e.publication_year,
+            reference_type=e.reference_type,
+            positions=e.positions,
+            url=e.url,
             source_description=e.source_description,
             review_status=e.review_status.value,
         ) for e in ev_result.scalars()
     ]
+
+    go_terms = []
+    if await _table_exists(db, "enzyme_go"):
+        go_result = await db.execute(
+            select(EnzymeGoTerm)
+            .where(EnzymeGoTerm.enzyme_id == enzyme_values["enzyme_id"])
+            .order_by(EnzymeGoTerm.go_record_id)
+        )
+        go_terms = [
+            GoTerm(go_id=go.go_id, go_term=go.go_term, go_url=go.go_url)
+            for go in go_result.scalars()
+        ]
+
+    isoforms = []
+    if await _table_exists(db, "enzyme_isoform"):
+        isoform_result = await db.execute(
+            select(EnzymeIsoform)
+            .where(EnzymeIsoform.enzyme_id == enzyme_values["enzyme_id"])
+            .order_by(EnzymeIsoform.isoform_record_id)
+        )
+        isoforms = [
+            IsoformSequence(
+                isoform_id=iso.isoform_id,
+                isoform_length=iso.isoform_length,
+                isoform_mass=iso.isoform_mass,
+                canonical_sequence=iso.canonical_sequence,
+                canonical_length=iso.canonical_length,
+                canonical_mass=iso.canonical_mass,
+                sequence=iso.sequence,
+            )
+            for iso in isoform_result.scalars()
+        ]
 
     # Reactions
     edge_result = await db.execute(
@@ -111,6 +155,7 @@ async def get_enzyme_detail(
                 chebi_id=cpd.chebi_id,
                 smiles=cpd.smiles,
                 average_mass=cpd.average_mass,
+                inchi_key=cpd.inchi_key,
                 chebi_url=cpd.chebi_url,
                 structure_image_url=cpd.structure_image_url,
             )
@@ -154,6 +199,8 @@ async def get_enzyme_detail(
         mass=enzyme_values["mass"],
         gene=gene_summary,
         sequence_links=sequence_links,
+        go_terms=go_terms,
+        isoforms=isoforms,
         reactions=reaction_items,
         evidence=evidences,
         links=links,
@@ -163,13 +210,17 @@ async def get_enzyme_detail(
 
 
 async def _sequence_link_table_exists(db: AsyncSession) -> bool:
+    return await _table_exists(db, "gene_sequence_link")
+
+
+async def _table_exists(db: AsyncSession, table_name: str) -> bool:
     try:
         result = await db.execute(
             text(
                 "SELECT COUNT(*) FROM information_schema.tables "
                 "WHERE table_schema = DATABASE() AND table_name = :table_name"
             ),
-            {"table_name": "gene_sequence_link"},
+            {"table_name": table_name},
         )
         return bool(result.scalar())
     except (ProgrammingError, OperationalError):
