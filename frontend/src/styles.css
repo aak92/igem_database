@@ -2975,7 +2975,7 @@ body:has(.graph-home-page) {
 
 .home-map-node.selected circle {
   stroke: #ff3131;
-  stroke-width: 0.45;
+  stroke-width: 0.58;
   filter: url("#selected-node-glow");
 }
 
@@ -4476,9 +4476,11 @@ body:has(.home-map-page) {
 }
 
 .selected-ring {
-  fill: none;
-  stroke: rgba(255, 68, 92, 0.96);
-  stroke-width: 0.34;
+  fill: rgba(255, 49, 49, 0.18);
+  stroke: rgba(255, 49, 49, 0.98);
+  stroke-width: 0.42;
+  vector-effect: non-scaling-stroke;
+  pointer-events: none;
 }
 
 .selected-pulse,
@@ -5196,12 +5198,12 @@ body:has(.home-map-page) {
   stroke-width: 0.34;
 }
 
-.home-map-node.selected circle,
-.home-map-node.highlighted circle,
-.home-map-node.pathway circle {
+.home-map-node.selected circle:not(.selected-ring),
+.home-map-node.highlighted circle:not(.selected-ring),
+.home-map-node.pathway circle:not(.selected-ring) {
   fill: #fff2c6;
   stroke: #ffd7ea;
-  stroke-width: 0.14;
+  stroke-width: 0.2;
 }
 
 .home-map-node.neighbor circle {
@@ -5210,7 +5212,12 @@ body:has(.home-map-page) {
 }
 
 .selected-ring {
-  display: none;
+  fill: rgba(255, 49, 49, 0.18);
+  stroke: #ff3131;
+  stroke-width: 0.42;
+  vector-effect: non-scaling-stroke;
+  pointer-events: none;
+  filter: url("#selected-node-glow");
 }
 
 .home-map-node-name {
@@ -5246,13 +5253,14 @@ body:has(.home-map-page) {
 .live-enzyme-stack,
 .live-pathway-card {
   left: auto;
-  right: 18px;
+  right: 24px;
   top: 214px;
   width: min(408px, calc(100vw - 36px));
   max-height: calc(100vh - 292px);
   overflow: auto;
   z-index: 6;
-  border-radius: 14px 0 0 14px;
+  border-radius: 18px;
+  border: 1px solid rgba(255, 248, 241, 0.16);
 }
 
 .live-compound-popover {
@@ -5260,8 +5268,12 @@ body:has(.home-map-page) {
 }
 
 .live-enzyme-stack {
-  padding: 52px 0 14px 14px;
+  padding: 52px 14px 14px;
   background: rgba(245, 241, 248, 0.46);
+}
+
+.live-enzyme-stack .enzyme-card {
+  border-radius: 14px;
 }
 
 .pathway-result-card {
@@ -5519,13 +5531,13 @@ body:has(.home-map-page) {
 
 .live-library-card {
   left: auto;
-  right: 18px;
+  right: 24px;
   top: 214px;
   width: min(408px, calc(100vw - 36px));
   max-height: calc(100vh - 292px);
   overflow: auto;
   z-index: 6;
-  border-radius: 14px 0 0 14px;
+  border-radius: 18px;
 }
 
 .library-result-card {

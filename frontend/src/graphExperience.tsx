@@ -191,7 +191,7 @@ export function CompoundGraphHome({
   const [librarySearchLoading, setLibrarySearchLoading] = useState(false)
   const [selectedLibraryItem, setSelectedLibraryItem] = useState<Entity | null>(null)
   const [selectedDatasetId, setSelectedDatasetId] = useState<(typeof homeDatasetOptions)[number]['id']>(homeDatasetOptions[0].id)
-  const [nodeSize, setNodeSize] = useState(1.05)
+  const [nodeSize, setNodeSize] = useState(1.8)
   const [labelScale, setLabelScale] = useState(1.22)
   const [activeNodeDragId, setActiveNodeDragId] = useState<string | null>(null)
   const [panelPosition, setPanelPosition] = useState<Point | null>(null)
@@ -1087,21 +1087,31 @@ export function CompoundGraphHome({
                   const neighbor = selectedNeighborIds.has(node.compoundId) && !selected && !pairEndpoint
                   const pos = positions[node.compoundId]
                   if (!pos) return null
-                  const showNodeLabel = importantLabelIds.has(node.compoundId) || selected || highlighted || pathway || pairEndpoint || neighbor
+                  const emphasized = selected || highlighted || pathway || pairEndpoint
+                  const displayNodeSize = nodeSize * (emphasized ? 1.14 : neighbor ? 1.06 : 1)
+                  const showNodeLabel = importantLabelIds.has(node.compoundId) || emphasized || neighbor
                   return (
                     <g key={node.compoundId} className={`home-map-node ${selected || pairEndpoint ? 'selected' : ''} ${highlighted ? 'highlighted' : ''} ${pathway ? 'pathway' : ''} ${neighbor ? 'neighbor' : ''} ${activeNodeDragId === node.compoundId ? 'dragging' : ''}`}>
+                      {emphasized && (
+                        <circle
+                          className="selected-ring"
+                          cx={pos.x}
+                          cy={pos.y}
+                          r={displayNodeSize + 0.82}
+                        />
+                      )}
                       <circle
                         cx={pos.x}
                         cy={pos.y}
-                        r={nodeSize}
-                        filter={selected || highlighted || pathway || pairEndpoint ? 'url(#selected-node-glow)' : 'url(#home-node-glow)'}
+                        r={displayNodeSize}
+                        filter={emphasized ? 'url(#selected-node-glow)' : 'url(#home-node-glow)'}
                         onPointerDown={(event) => handleNodePointerDown(event, node, pos)}
                         onPointerMove={handleNodePointerMove}
                         onPointerUp={finishNodeDrag}
                         onPointerCancel={finishNodeDrag}
                       />
                       <title>{node.name}</title>
-                      <text x={pos.x} y={pos.y + nodeSize + 6.3} className={`home-map-node-name ${showNodeLabel ? 'is-visible' : ''}`} fontSize={2.35 * labelScale}>
+                      <text x={pos.x} y={pos.y + displayNodeSize + 6.3} className={`home-map-node-name ${showNodeLabel ? 'is-visible' : ''}`} fontSize={2.35 * labelScale}>
                         {wrapCompoundLabel(node.name).map((line, lineIndex) => (
                           <tspan key={`${node.compoundId}:label:${lineIndex}`} x={pos.x} dy={lineIndex === 0 ? 0 : '1.2em'}>{line}</tspan>
                         ))}
