@@ -33,17 +33,24 @@ import type { Entity, EntityKind } from './types'
 const HOME_EXPANSION_LIMIT = 36
 const HOME_VIEWBOX_WIDTH = 100
 const HOME_VIEWBOX_HEIGHT = 118
+const HOME_LAYOUT_WIDTH = HOME_VIEWBOX_WIDTH * 2.8
+const HOME_LAYOUT_HEIGHT = HOME_VIEWBOX_HEIGHT * 2.8
+const HOME_LAYOUT_MIN_X = (HOME_VIEWBOX_WIDTH - HOME_LAYOUT_WIDTH) / 2
+const HOME_LAYOUT_MIN_Y = (HOME_VIEWBOX_HEIGHT - HOME_LAYOUT_HEIGHT) / 2
+const HOME_LAYOUT_MAX_X = HOME_LAYOUT_MIN_X + HOME_LAYOUT_WIDTH
+const HOME_LAYOUT_MAX_Y = HOME_LAYOUT_MIN_Y + HOME_LAYOUT_HEIGHT
+const HOME_LAYOUT_MARGIN = 12
 const HOME_IMPORTANT_LABEL_COUNT = 10
-const HOME_FORCE_ITERATIONS = 340
-const HOME_FORCE_REPULSION = 82
-const HOME_FORCE_LINK_DISTANCE = 32
-const HOME_FORCE_LINK_STRENGTH = 0.0048
-const HOME_FORCE_CENTERING = 0.00055
-const HOME_FORCE_DAMPING = 0.66
-const HOME_FORCE_COLLISION_DISTANCE = 7.2
-const HOME_FORCE_COLLISION_STRENGTH = 0.34
-const HOME_FINAL_COLLISION_DISTANCE = 7.2
-const HOME_FINAL_COLLISION_ITERATIONS = 260
+const HOME_FORCE_ITERATIONS = 520
+const HOME_FORCE_REPULSION = 246
+const HOME_FORCE_LINK_DISTANCE = 72
+const HOME_FORCE_LINK_STRENGTH = 0.0034
+const HOME_FORCE_CENTERING = 0.00028
+const HOME_FORCE_DAMPING = 0.68
+const HOME_FORCE_COLLISION_DISTANCE = 21.6
+const HOME_FORCE_COLLISION_STRENGTH = 0.5
+const HOME_FINAL_COLLISION_DISTANCE = 21.6
+const HOME_FINAL_COLLISION_ITERATIONS = 420
 const HOME_GOLDEN_ANGLE = Math.PI * (3 - Math.sqrt(5))
 const homeSearchModes = [
   { id: 'enzymeItems', label: 'Enzyme items' },
@@ -856,148 +863,172 @@ export function CompoundGraphHome({
   return (
     <div className="home-map-page">
       <section className="atlas-map-stage atlas-live-stage" aria-label="Interactive compound graph homepage">
-        <div className="atlas-brand">
-          <span className="atlas-logo">
-            <Network size={18} />
-          </span>
-          <span>Starase Atlas</span>
-        </div>
+        <header className="graph-top-nav">
+          <div className="atlas-brand">
+            <span className="atlas-logo">
+              <Network size={18} />
+            </span>
+            <span>Starase Atlas</span>
+          </div>
 
-        <div className="atlas-year">NJU - China 2026</div>
-
-        <div className={`floating-pill dataset-pill dataset-pill-static ${datasetOpen ? 'is-open' : ''}`}>
-          <button className="dataset-pill-button" type="button" onClick={() => setDatasetOpen((open) => !open)}>
-            <span>Dataset</span>
-            <strong>{selectedDataset.label}</strong>
-            <ChevronDown size={18} />
-          </button>
-          {datasetOpen && (
-            <div className="floating-menu dataset-menu dataset-select-menu">
-              {homeDatasetOptions.map((item) => (
-                <button
-                  key={item.id}
-                  type="button"
-                  disabled={item.disabled}
-                  className={item.id === selectedDatasetId ? 'is-active' : ''}
-                  onClick={() => {
-                    if (item.disabled) return
-                    setSelectedDatasetId(item.id)
-                    setDatasetOpen(false)
-                  }}
-                >
-                  <span>{item.label}</span>
-                  <small>{item.detail}</small>
-                </button>
-              ))}
-            </div>
-          )}
-        </div>
-
-        <div className="home-search-bar">
-          <button className="home-search-mode" type="button" onClick={() => setModeOpen((open) => !open)}>
-            <ChevronDown size={22} />
-            <span>{homeSearchModes.find((item) => item.id === mode)?.label}</span>
-          </button>
-          {modeOpen && (
-            <div className="floating-menu search-mode-menu">
-              {homeSearchModes.map((item) => (
-                <button
-                  key={item.id}
-                  type="button"
-                  onClick={() => {
-                    setMode(item.id)
-                    setModeOpen(false)
-                  }}
-                >
-                  {item.label}
-                </button>
-              ))}
-            </div>
-          )}
-          <input
-            value={searchValue}
-            onFocus={() => setSearchFocused(true)}
-            onChange={(event) => {
-              setSearchValue(event.target.value)
-              setSearchFocused(true)
-            }}
-            onKeyDown={(event) => {
-              if (event.key === 'Enter') void handleSearchSubmit()
-              if (event.key === 'Escape') setSearchFocused(false)
-            }}
-            placeholder={searchPlaceholder}
-          />
-          <button className="home-search-submit" type="button" onClick={() => void handleSearchSubmit()} title="Search">
-            <Search size={34} />
-          </button>
-          {showSearchSuggestions && (
-            <div className="home-search-suggestions" onPointerDown={(event) => event.preventDefault()}>
-              <div className="home-search-filter-row">
-                {homeSearchFilters.map((filter) => (
+          <div className="home-search-bar">
+            <button className="home-search-mode" type="button" onClick={() => setModeOpen((open) => !open)}>
+              <ChevronDown size={18} />
+              <span>{homeSearchModes.find((item) => item.id === mode)?.label}</span>
+            </button>
+            {modeOpen && (
+              <div className="floating-menu search-mode-menu">
+                {homeSearchModes.map((item) => (
                   <button
-                    key={filter.id}
+                    key={item.id}
                     type="button"
-                    className={searchFilter === filter.id ? 'is-active' : ''}
-                    onClick={() => setSearchFilter(filter.id)}
+                    onClick={() => {
+                      setMode(item.id)
+                      setModeOpen(false)
+                    }}
                   >
-                    {filter.label}
+                    {item.label}
                   </button>
                 ))}
               </div>
-              <div className="home-search-result-list">
-                {visibleSearchSuggestions.map((suggestion) => (
-                  <button key={suggestion.id} type="button" onClick={() => void handleSearchSuggestionSelect(suggestion)}>
-                    <span className={`home-result-kind ${suggestion.kind}`}>{suggestion.kind}</span>
-                    <span>
-                      <strong>{suggestion.title}</strong>
-                      <small>{suggestion.subtitle}</small>
-                    </span>
+            )}
+            <input
+              value={searchValue}
+              onFocus={() => setSearchFocused(true)}
+              onChange={(event) => {
+                setSearchValue(event.target.value)
+                setSearchFocused(true)
+              }}
+              onKeyDown={(event) => {
+                if (event.key === 'Enter') void handleSearchSubmit()
+                if (event.key === 'Escape') setSearchFocused(false)
+              }}
+              placeholder={searchPlaceholder}
+            />
+            <button className="home-search-submit" type="button" onClick={() => void handleSearchSubmit()} title="Search">
+              <Search size={20} />
+            </button>
+            {showSearchSuggestions && (
+              <div className="home-search-suggestions" onPointerDown={(event) => event.preventDefault()}>
+                <div className="home-search-filter-row">
+                  {homeSearchFilters.map((filter) => (
+                    <button
+                      key={filter.id}
+                      type="button"
+                      className={searchFilter === filter.id ? 'is-active' : ''}
+                      onClick={() => setSearchFilter(filter.id)}
+                    >
+                      {filter.label}
+                    </button>
+                  ))}
+                </div>
+                <div className="home-search-result-list">
+                  {visibleSearchSuggestions.map((suggestion) => (
+                    <button key={suggestion.id} type="button" onClick={() => void handleSearchSuggestionSelect(suggestion)}>
+                      <span className={`home-result-kind ${suggestion.kind}`}>{suggestion.kind}</span>
+                      <span>
+                        <strong>{suggestion.title}</strong>
+                        <small>{suggestion.subtitle}</small>
+                      </span>
+                    </button>
+                  ))}
+                  {visibleSearchSuggestions.length === 0 && (
+                    <div className="home-search-empty">
+                      {librarySearchLoading ? 'Searching...' : 'No matching entries in the current map.'}
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
+          </div>
+
+          <nav className="graph-primary-nav" aria-label="Graph page navigation">
+            <button type="button" onClick={() => onOpenSearch(searchValue.trim() || undefined)}>Data Browser</button>
+            <button type="button" onClick={onOpenNetwork}>Analysis</button>
+            <span>About</span>
+            <span className="graph-user-chip">NJU - China 2026</span>
+          </nav>
+        </header>
+
+        <div className="graph-title-band">
+          <div className="graph-crumbs">
+            <span>Home</span>
+            <ChevronRight size={14} />
+            <strong>Graph Atlas</strong>
+          </div>
+          <h1>Compound Relationship Graph: Enzymes & Pathways</h1>
+        </div>
+
+        <aside className="graph-filter-sidebar" aria-label="Graph filters and controls">
+          <p className="graph-filter-title">Data Filters</p>
+          <div className={`floating-pill dataset-pill dataset-pill-static ${datasetOpen ? 'is-open' : ''}`}>
+            <button className="dataset-pill-button" type="button" onClick={() => setDatasetOpen((open) => !open)}>
+              <span>Dataset</span>
+              <strong>{selectedDataset.label}</strong>
+              <ChevronDown size={16} />
+            </button>
+            {datasetOpen && (
+              <div className="floating-menu dataset-menu dataset-select-menu">
+                {homeDatasetOptions.map((item) => (
+                  <button
+                    key={item.id}
+                    type="button"
+                    disabled={item.disabled}
+                    className={item.id === selectedDatasetId ? 'is-active' : ''}
+                    onClick={() => {
+                      if (item.disabled) return
+                      setSelectedDatasetId(item.id)
+                      setDatasetOpen(false)
+                    }}
+                  >
+                    <span>{item.label}</span>
+                    <small>{item.detail}</small>
                   </button>
                 ))}
-                {visibleSearchSuggestions.length === 0 && (
-                  <div className="home-search-empty">
-                    {librarySearchLoading ? 'Searching...' : 'No matching entries in the current map.'}
+              </div>
+            )}
+          </div>
+
+          <button className="graph-filter-link" type="button" onClick={() => setSearchFilter('compound')}>Compounds</button>
+          <button className="graph-filter-link" type="button" onClick={() => setSearchFilter('enzyme')}>Enzymes</button>
+          <button className="graph-filter-link" type="button" onClick={() => setSearchFilter('reaction')}>Reactions</button>
+          <button className="graph-filter-link" type="button" onClick={clearPairSelection}>Clear highlights</button>
+
+          <div className={`floating-pill mapping-pill ${controlsOpen ? 'is-open' : ''}`}>
+            <button type="button" onClick={() => setControlsOpen((open) => !open)}>
+              <span>Graph controls</span>
+              <ChevronDown size={16} />
+            </button>
+            {controlsOpen && (
+              <div className="floating-menu source-menu compact-home-menu control-home-menu">
+                <div className="control-group">
+                  <label htmlFor="home-node-size">Node size</label>
+                  <div className="control-slider-row">
+                    <input id="home-node-size" className="control-slider" type="range" min="0.7" max="2.8" step="0.05" value={nodeSize} onChange={(event) => setNodeSize(Number(event.target.value))} />
+                    <span className="control-value">{nodeSize.toFixed(1)}</span>
                   </div>
-                )}
+                </div>
+                <div className="control-group">
+                  <label htmlFor="home-label-size">Label size</label>
+                  <div className="control-slider-row">
+                    <input id="home-label-size" className="control-slider" type="range" min="0.85" max="2.1" step="0.05" value={labelScale} onChange={(event) => setLabelScale(Number(event.target.value))} />
+                    <span className="control-value">{labelScale.toFixed(2)}</span>
+                  </div>
+                </div>
+                <div className="control-menu-actions">
+                  <button type="button" onClick={() => { resetLayout(); setControlsOpen(false) }}>Reset layout</button>
+                  <button type="button" onClick={() => { clearPairSelection(); setControlsOpen(false) }}>Clear selection</button>
+                  <button type="button" onClick={() => { onOpenSearch(searchValue.trim() || undefined); setControlsOpen(false) }}>Open search library</button>
+                </div>
               </div>
-            </div>
-          )}
-        </div>
+            )}
+          </div>
 
-        <button className="floating-pill download-pill home-pill-button" type="button" onClick={onOpenDownloads}>
-          Downloading table
-          {queueCount > 0 && <span>{queueCount}</span>}
-        </button>
-
-        <div className={`floating-pill mapping-pill ${controlsOpen ? 'is-open' : ''}`}>
-          <button type="button" onClick={() => setControlsOpen((open) => !open)}>
-            <span>Graph controls</span>
-            <ChevronDown size={18} />
+          <button className="floating-pill download-pill home-pill-button" type="button" onClick={onOpenDownloads}>
+            Downloading table
+            {queueCount > 0 && <span>{queueCount}</span>}
           </button>
-          {controlsOpen && (
-            <div className="floating-menu source-menu compact-home-menu control-home-menu">
-              <div className="control-group">
-                <label htmlFor="home-node-size">Node size</label>
-                <div className="control-slider-row">
-                  <input id="home-node-size" className="control-slider" type="range" min="0.7" max="2.8" step="0.05" value={nodeSize} onChange={(event) => setNodeSize(Number(event.target.value))} />
-                  <span className="control-value">{nodeSize.toFixed(1)}</span>
-                </div>
-              </div>
-              <div className="control-group">
-                <label htmlFor="home-label-size">Label size</label>
-                <div className="control-slider-row">
-                  <input id="home-label-size" className="control-slider" type="range" min="0.85" max="2.1" step="0.05" value={labelScale} onChange={(event) => setLabelScale(Number(event.target.value))} />
-                  <span className="control-value">{labelScale.toFixed(2)}</span>
-                </div>
-              </div>
-              <div className="control-menu-actions">
-                <button type="button" onClick={() => { resetLayout(); setControlsOpen(false) }}>Reset layout</button>
-                <button type="button" onClick={() => { clearPairSelection(); setControlsOpen(false) }}>Clear selection</button>
-                <button type="button" onClick={() => { onOpenSearch(searchValue.trim() || undefined); setControlsOpen(false) }}>Open search library</button>
-              </div>
-            </div>
-          )}
-        </div>
+        </aside>
 
         {loading && <div className="home-map-feedback"><Loader2 size={18} className="spin" /> Loading backend graph...</div>}
         {error && !loading && <div className="home-map-feedback error-state"><X size={18} /> {error}</div>}
@@ -1659,15 +1690,15 @@ function normalizeHomePositions(positions: Record<string, Point>) {
   const maxY = Math.max(...points.map((point) => point.y))
   const width = Math.max(maxX - minX, 1)
   const height = Math.max(maxY - minY, 1)
-  const scaleX = ((HOME_VIEWBOX_WIDTH - 13) / width) * 0.96
-  const scaleY = ((HOME_VIEWBOX_HEIGHT - 18) / height) * 0.96
+  const scaleX = ((HOME_LAYOUT_WIDTH - HOME_LAYOUT_MARGIN * 2) / width) * 0.96
+  const scaleY = ((HOME_LAYOUT_HEIGHT - HOME_LAYOUT_MARGIN * 2) / height) * 0.96
   const sourceCenter = { x: minX + width / 2, y: minY + height / 2 }
   const targetCenter = { x: HOME_VIEWBOX_WIDTH / 2, y: HOME_VIEWBOX_HEIGHT / 2 }
   const normalized: Record<string, Point> = {}
   Object.entries(positions).forEach(([compoundId, point]) => {
     normalized[compoundId] = {
-      x: clamp(targetCenter.x + (point.x - sourceCenter.x) * scaleX, 5.5, HOME_VIEWBOX_WIDTH - 5.5),
-      y: clamp(targetCenter.y + (point.y - sourceCenter.y) * scaleY, 7, HOME_VIEWBOX_HEIGHT - 7),
+      x: clamp(targetCenter.x + (point.x - sourceCenter.x) * scaleX, HOME_LAYOUT_MIN_X + HOME_LAYOUT_MARGIN, HOME_LAYOUT_MAX_X - HOME_LAYOUT_MARGIN),
+      y: clamp(targetCenter.y + (point.y - sourceCenter.y) * scaleY, HOME_LAYOUT_MIN_Y + HOME_LAYOUT_MARGIN, HOME_LAYOUT_MAX_Y - HOME_LAYOUT_MARGIN),
     }
   })
   return normalized
@@ -1705,8 +1736,8 @@ function relaxHomePositionCollisions(positions: Record<string, Point>) {
       }
     }
     entries.forEach(([, point]) => {
-      point.x = clamp(point.x, 5.5, HOME_VIEWBOX_WIDTH - 5.5)
-      point.y = clamp(point.y, 7, HOME_VIEWBOX_HEIGHT - 7)
+      point.x = clamp(point.x, HOME_LAYOUT_MIN_X + HOME_LAYOUT_MARGIN, HOME_LAYOUT_MAX_X - HOME_LAYOUT_MARGIN)
+      point.y = clamp(point.y, HOME_LAYOUT_MIN_Y + HOME_LAYOUT_MARGIN, HOME_LAYOUT_MAX_Y - HOME_LAYOUT_MARGIN)
     })
     if (!moved) break
   }
@@ -1987,8 +2018,8 @@ function addExpansionPositions(current: Record<string, Point>, payload: HomeGrap
     const rowStart = row * laneCount
     const rowItems = Math.min(laneCount, incomingNodes.length - rowStart)
     const slot = index - rowStart
-    const lateral = (slot - (rowItems - 1) / 2) * 9.5
-    const depth = 19 + row * 16 + Math.abs(slot - (rowItems - 1) / 2) * 0.8
+    const lateral = (slot - (rowItems - 1) / 2) * 25
+    const depth = 48 + row * 42 + Math.abs(slot - (rowItems - 1) / 2) * 2.2
     const jitter = stableJitter(node.compoundId)
     next[node.compoundId] = {
       x: seed.x + normal.x * depth + tangent.x * lateral + jitter.x,
