@@ -24,7 +24,7 @@ export function HomePage({
   onOpenNetwork: () => void
   onOpenDownloads: () => void
   onOpenEnzyme: (id: string) => void
-  onToggleQueue: (id: string) => void
+  onToggleQueue: (entry: string | Entity) => void
   openRecord: (entity: Entity) => void
   isQueued: (id: string) => boolean
 }) {

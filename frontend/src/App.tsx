@@ -28,6 +28,7 @@ let graphEdges = mockGraphEdges
 let graphNodes = mockGraphNodes
 
 const getEntity = (id: string) => entities.find((entity) => entity.id === id)
+type QueueEntry = string | Entity
 
 const navigation = [
   { view: 'home', label: 'Overview', icon: Sparkles },
@@ -45,10 +46,11 @@ function App() {
   const [selectedFamily, setSelectedFamily] = useState(filterOptions.families[0])
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const [downloadedIds, setDownloadedIds] = useState<string[]>(['CHEBI:17115', 'ENZ:Q9ZSY2'])
+  const [queuedEntitiesById, setQueuedEntitiesById] = useState<Record<string, Entity>>({})
   const [apiSearchResults, setApiSearchResults] = useState<Entity[] | null>(null)
   const [apiSearchLoading, setApiSearchLoading] = useState(false)
   const [apiSearchError, setApiSearchError] = useState<string | null>(null)
-  const [, setDatasetRevision] = useState(0)
+  const [datasetRevision, setDatasetRevision] = useState(0)
 
   useEffect(() => {
     let cancelled = false
@@ -131,10 +133,13 @@ function App() {
 
   const filters = { query, searchKind, species: selectedSpecies, compoundClass: selectedClass, enzymeFamily: selectedFamily }
   const selected = selectedId ? getEntity(selectedId) : undefined
-  const downloadedItems = useMemo(() => downloadedIds.map((id) => getEntity(id)).filter((entity): entity is Entity => Boolean(entity)), [downloadedIds])
+  const downloadedItems = useMemo(
+    () => downloadedIds.map((id) => getEntity(id) || queuedEntitiesById[id]).filter((entity): entity is Entity => Boolean(entity)),
+    [downloadedIds, queuedEntitiesById, datasetRevision],
+  )
   const queuedIds = useMemo(() => new Set(downloadedIds), [downloadedIds])
 
-  const localFilteredEntities = useMemo(() => entities.filter((entity) => matchesFilters(entity, filters, filterOptions)), [filters])
+  const localFilteredEntities = useMemo(() => entities.filter((entity) => matchesFilters(entity, filters, filterOptions)), [filters, datasetRevision])
   const filteredEntities = apiSearchResults ? apiSearchResults.filter((entity) => matchesFilters(entity, { ...filters, query: '' }, filterOptions)) : localFilteredEntities
   const visibleNodeIds = useMemo(
     () =>
@@ -143,7 +148,7 @@ function App() {
           .filter((node) => matchesFilters(getEntity(node.id), filters, filterOptions))
           .map((node) => node.id),
       ),
-    [filters],
+    [filters, datasetRevision],
   )
 
   const routeCount = new Set(graphEdges.map((edge) => edge.edgeGroupId || edge.reactionId)).size
@@ -151,20 +156,43 @@ function App() {
   const visibleNodeCount = visibleNodeIds.size
   const visibleEdgeCount = graphEdges.filter((edge) => visibleNodeIds.has(edge.source) && visibleNodeIds.has(edge.target)).length
 
-  const addToQueue = (id: string) => {
+  const rememberQueuedEntity = (entry: QueueEntry) => {
+    if (typeof entry === 'string' || getEntity(entry.id)) return
+    setQueuedEntitiesById((current) => ({ ...current, [entry.id]: entry }))
+  }
+
+  const forgetQueuedEntity = (id: string) => {
+    setQueuedEntitiesById((current) => {
+      if (!current[id]) return current
+      const { [id]: _removed, ...rest } = current
+      return rest
+    })
+  }
+
+  const addToQueue = (entry: QueueEntry) => {
+    const id = typeof entry === 'string' ? entry : entry.id
+    rememberQueuedEntity(entry)
     setDownloadedIds((current) => (current.includes(id) ? current : [...current, id]))
   }
 
   const removeFromQueue = (id: string) => {
     setDownloadedIds((current) => current.filter((item) => item !== id))
+    forgetQueuedEntity(id)
   }
 
-  const toggleQueue = (id: string) => {
+  const toggleQueue = (entry: QueueEntry) => {
+    const id = typeof entry === 'string' ? entry : entry.id
+    if (downloadedIds.includes(id)) {
+      forgetQueuedEntity(id)
+    } else {
+      rememberQueuedEntity(entry)
+    }
     setDownloadedIds((current) => (current.includes(id) ? current.filter((item) => item !== id) : [...current, id]))
   }
 
   const clearQueue = () => {
     setDownloadedIds([])
+    setQueuedEntitiesById({})
   }
 
   const openRecord = (entity: Entity) => {
@@ -361,8 +389,6 @@ function App() {
             removeFromQueue={removeFromQueue}
             clearQueue={clearQueue}
             exportQueue={exportQueue}
-            onOpenNetwork={() => goTo('home')}
-            onOpenSearch={() => goTo('search')}
             onOpenEntity={(id) => { const entity = getEntity(id); if (entity?.kind === 'enzyme') goTo('enzyme', id); else goTo('search', id) }}
             openRecord={openRecord}
           />

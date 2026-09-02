@@ -160,7 +160,7 @@ export function CompoundGraphHome({
   onOpenNetwork: () => void
   onOpenDownloads: () => void
   onOpenEnzyme: (enzymeId: string) => void
-  onToggleQueue: (id: string) => void
+  onToggleQueue: (entry: string | Entity) => void
   isQueued: (id: string) => boolean
   queueCount: number
 }) {
@@ -831,6 +831,7 @@ export function CompoundGraphHome({
     if (chebiId?.startsWith('CHEBI:')) return `/api/v1/assets/compounds/${encodeURIComponent(chebiId)}/structure.svg?v=4`
     return compound.structureImageUrl || null
   }
+  const selectedNodeQueueEntity = selectedNode ? homeCompoundToEntity(selectedNode, compoundImageUrl(selectedNode)) : null
 
   const searchPlaceholder =
     mode === 'blast'
@@ -1154,7 +1155,7 @@ export function CompoundGraphHome({
               {selectedNode.formula && <p><span>Formula :</span><strong>{selectedNode.formula}</strong></p>}
               {selectedNode.smiles && <p className="popover-smiles-row"><span>Smiles :</span><strong>{selectedNode.smiles}</strong></p>}
             </div>
-            <button className="popover-cart" type="button" onClick={() => onToggleQueue(selectedNode.compoundId)}>
+            <button className="popover-cart" type="button" onClick={() => onToggleQueue(selectedNodeQueueEntity || selectedNode.compoundId)}>
               <span className={`check-box ${isQueued(selectedNode.compoundId) ? 'checked' : ''}`}>{isQueued(selectedNode.compoundId) && <Check size={17} />}</span>
               {isQueued(selectedNode.compoundId) ? 'In downloading table' : 'Add to downloading table'}
             </button>
@@ -1176,9 +1177,10 @@ export function CompoundGraphHome({
               const edge = group.representative
               const enzymeId = edge.card?.enzymeId || edge.enzymeId
               const queued = isQueued(enzymeId)
+              const queueEntity = homeEnzymeToEntity(edge, enzymeId, compoundName(edge.sourceCompoundId), compoundName(edge.targetCompoundId))
               return (
                 <article key={group.key} className={`enzyme-card ${group.edgeIds.includes(selectedEdgeId || '') ? 'selected' : ''}`}>
-                  <button className="card-check" type="button" onClick={() => onToggleQueue(enzymeId)}>
+                  <button className="card-check" type="button" onClick={() => onToggleQueue(queueEntity)}>
                     {queued ? <Check size={18} /> : <Download size={18} />}
                   </button>
                   <button className="enzyme-card-copy" type="button" onClick={() => setSelectedEdgeId(group.representative.edgeId)}>
@@ -1406,6 +1408,58 @@ export function EnzymeDetailView({ enzymeId, onBack, onToggleQueue, isQueued }: 
 type SequenceRow = {
   start: number
   chunks: string[]
+}
+
+function homeCompoundToEntity(compound: HomeGraphCompound, imageUrl?: string | null): Entity {
+  return {
+    id: compound.compoundId,
+    kind: 'compound',
+    name: compound.name,
+    subtitle: compound.chebiId || compound.compoundId,
+    description: compound.description || compound.smiles || 'Compound record from the terpene pathway graph.',
+    tags: ['Compound'],
+    imageLabel: imageUrl || compound.chebiId ? '2D structure' : undefined,
+    imageUrl: imageUrl || undefined,
+    fields: [
+      entityField('Formula', compound.formula),
+      entityField('Average mass', compound.averageMass),
+      entityField('Charge', compound.charge),
+      entityField('ChEBI', compound.chebiId),
+      entityField('SMILES', compound.smiles),
+    ].filter(Boolean) as Array<{ label: string; value: string }>,
+    related: [],
+  }
+}
+
+function homeEnzymeToEntity(edge: HomeGraphEdge, enzymeId: string, sourceName: string, targetName: string): Entity {
+  const card = edge.card
+
+  return {
+    id: enzymeId,
+    kind: 'enzyme',
+    name: card?.primaryName || edge.label || enzymeId,
+    subtitle: [card?.uniprotId || card?.databaseCode || enzymeId, card?.ecNumber].filter(Boolean).join(' · '),
+    description: card?.reactionEquation || `${sourceName} -> ${targetName}`,
+    tags: [card?.sourceType || edge.sourceType, card?.reviewStatus || edge.reviewStatus].filter(Boolean) as string[],
+    species: card?.organismName || undefined,
+    fields: [
+      entityField('UniProt', card?.uniprotId),
+      entityField('EC number', card?.ecNumber),
+      entityField('Organism', card?.organismName),
+      entityField('Gene name', card?.geneName),
+      entityField('Reaction', card?.reactionId || edge.reactionId),
+      entityField('Direction', card?.reactionDirection || edge.direction),
+    ].filter(Boolean) as Array<{ label: string; value: string }>,
+    related: [
+      { id: edge.sourceCompoundId, name: sourceName, kind: 'compound' },
+      { id: edge.targetCompoundId, name: targetName, kind: 'compound' },
+    ],
+  }
+}
+
+function entityField(label: string, rawValue: string | number | null | undefined) {
+  if (rawValue === null || rawValue === undefined || rawValue === '') return null
+  return { label, value: String(rawValue) }
 }
 
 function formatSequenceRows(sequence: string): SequenceRow[] {

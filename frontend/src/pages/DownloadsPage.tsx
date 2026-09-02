@@ -1,6 +1,5 @@
 import { useState } from 'react'
-import { ArrowDownToLine, ArrowUpRight, Download, ExternalLink, Network, Search, X } from 'lucide-react'
-import { SummaryRow } from '../components/SummaryRow'
+import { ArrowDownToLine, ArrowUpRight, Download, ExternalLink, X } from 'lucide-react'
 import type { Entity } from '../types'
 import { kindIcons, kindLabels } from '../lib/entities'
 
@@ -9,8 +8,6 @@ export function DownloadsPage({
   removeFromQueue,
   clearQueue,
   exportQueue,
-  onOpenNetwork,
-  onOpenSearch,
   onOpenEntity,
   openRecord,
 }: {
@@ -18,16 +15,9 @@ export function DownloadsPage({
   removeFromQueue: (id: string) => void
   clearQueue: () => void
   exportQueue: () => void
-  onOpenNetwork: () => void
-  onOpenSearch: () => void
   onOpenEntity: (id: string) => void
   openRecord: (entity: Entity) => void
 }) {
-  const counts = {
-    compound: downloadedItems.filter((item) => item.kind === 'compound').length,
-    enzyme: downloadedItems.filter((item) => item.kind === 'enzyme').length,
-    reaction: downloadedItems.filter((item) => item.kind === 'reaction').length,
-  }
   const [activeTab, setActiveTab] = useState<'enzymes' | 'pathways'>('enzymes')
   const enzymeItems = downloadedItems.filter((item) => item.kind === 'enzyme')
   const pathwayItems = downloadedItems.filter((item) => item.kind !== 'enzyme')
@@ -171,46 +161,6 @@ export function DownloadsPage({
           </div>
         </div>
 
-        <aside className="downloads-summary">
-          <div className="section-panel summary-panel">
-            <div className="panel-header">
-              <div>
-                <div className="panel-kicker">
-                  <span className="live-line" />
-                  Queue summary
-                </div>
-                <h2>Type breakdown</h2>
-              </div>
-            </div>
-            <div className="summary-list">
-              <SummaryRow label="Compounds" value={counts.compound} />
-              <SummaryRow label="Enzymes" value={counts.enzyme} />
-              <SummaryRow label="Reactions" value={counts.reaction} />
-            </div>
-          </div>
-
-          <div className="section-panel summary-panel">
-            <div className="panel-header">
-              <div>
-                <div className="panel-kicker">
-                  <span className="live-line" />
-                  Quick actions
-                </div>
-                <h2>Next steps</h2>
-              </div>
-            </div>
-            <div className="summary-actions">
-              <button className="secondary-button" onClick={onOpenSearch}>
-                <Search size={15} />
-                Add more records
-              </button>
-              <button className="secondary-button" onClick={onOpenNetwork}>
-                <Network size={15} />
-                Return home
-              </button>
-            </div>
-          </div>
-        </aside>
       </section>
     </div>
   )

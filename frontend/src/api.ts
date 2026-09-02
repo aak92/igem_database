@@ -446,6 +446,7 @@ export type HomeGraphEnzymeCard = {
   uniprotId?: string | null
   databaseCode: string
   organismName?: string | null
+  geneName?: string | null
   ecNumber?: string | null
   reactionId: string
   reactionEquation: string
