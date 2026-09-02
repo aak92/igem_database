@@ -1,7 +1,7 @@
 import os
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-DATA_DIR = os.path.join(os.path.dirname(BASE_DIR), "database 1st data")
+DATA_DIR = os.path.dirname(BASE_DIR)
 
 DB_CONFIG = {
     "host": os.getenv("IGEM_DB_HOST", "localhost"),

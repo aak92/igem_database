@@ -277,6 +277,10 @@ export function CompoundGraphHome({
     () => groupExpandedEdgesByEnzyme(pairEdges, selectedPair?.sourceId, selectedPair?.targetId),
     [pairEdges, selectedPair?.sourceId, selectedPair?.targetId],
   )
+  const expandedReactionGroups = useMemo(
+    () => groupExpandedEdgesByReaction(pairEdges, selectedPair?.sourceId, selectedPair?.targetId),
+    [pairEdges, selectedPair?.sourceId, selectedPair?.targetId],
+  )
   const selectedExpandedGroup = expandedEdgeGroups.find((group) => group.edgeIds.includes(selectedEdgeId || '')) || expandedEdgeGroups[0] || null
   const selectedPairTotal = selectedPair ? Math.max(selectedPair.count, selectedPair.edges.length) : 0
   const visibleEdgeCount = viewModel.pairs.reduce((sum, pair) => sum + Math.max(pair.count, pair.edges.length || 0), 0)
@@ -1032,8 +1036,8 @@ export function CompoundGraphHome({
                   if (!source || !target) return null
                   const pairGroupId = pair.edgeGroupId || pair.key
                   const isExpanded = selectedPairKey === pair.key && pairEdges.length > 0
-                  const expandedItems = expandedEdgeGroups
-                  const offsets = expandedItems.length > 1 ? expandedItems.map((_, index) => (index - (expandedItems.length - 1) / 2) * 3.2) : [0]
+                  const expandedItems = expandedReactionGroups
+                  const offsets = expandedItems.length > 1 ? expandedItems.map((_, index) => (index - (expandedItems.length - 1) / 2) * 5.2) : [0]
                   const pairLineLabel = pair.count > 1 ? `enzyme*${pair.count}` : pair.edges[0]?.card?.primaryName || 'enzyme'
                   const highlightedPair = highlightedEdgeGroupIds.has(pairGroupId) || pair.edgeIds.some((edgeId) => highlightedEdgeIds.has(edgeId))
                   const pathwayPair = Boolean(activePathway && (activePathway.edgeGroupIds.includes(pairGroupId) || pair.edgeIds.some((edgeId) => activePathway.edgeIds.includes(edgeId))))
@@ -1058,11 +1062,12 @@ export function CompoundGraphHome({
                         const highlightedEdge = highlightedPair || edge.edgeIds.some((edgeId) => highlightedEdgeIds.has(edgeId))
                         const pathwayEdge = Boolean(activePathway?.edgeIds.some((edgeId) => edge.edgeIds.includes(edgeId)))
                         const selectedEdgeGroup = edge.edgeIds.includes(selectedEdgeId || '')
+                        const reactionColorClass = expandedItems.length === 1 ? 'single-reaction' : `reaction-color-${index % 10}`
                         return (
                           <g key={edge.key}>
                             <path
                               d={edgePath(source, target, offset)}
-                              className={`expanded-edge live-expanded-edge ${selectedEdgeGroup ? 'selected' : ''} ${highlightedEdge ? 'highlighted' : ''} ${pathwayEdge ? 'pathway' : ''}`}
+                              className={`expanded-edge live-expanded-edge ${reactionColorClass} ${selectedEdgeGroup ? 'selected' : ''} ${highlightedEdge ? 'highlighted' : ''} ${pathwayEdge ? 'pathway' : ''}`}
                               markerStart={edge.directionMode === 'reverse' || edge.directionMode === 'bidirectional' ? 'url(#home-map-arrow)' : undefined}
                               markerEnd={edge.directionMode === 'forward' || edge.directionMode === 'bidirectional' ? 'url(#home-map-arrow)' : undefined}
                               onPointerDown={(event) => event.stopPropagation()}
@@ -1697,6 +1702,38 @@ function groupExpandedEdgesByEnzyme(edges: HomeGraphEdge[], referenceSourceId = 
     current.reactionIds = Array.from(new Set([...current.reactionIds, edge.reactionId]))
     current.directionMode = directionModeForEdges(nextEdges, current.sourceId, current.targetId)
     if (!current.label && (edge.card?.uniprotId || edge.card?.databaseCode || edge.enzymeId)) current.label = edge.card?.uniprotId || edge.card?.databaseCode || edge.enzymeId
+  })
+
+  return [...groups.values()].sort((a, b) => a.label.localeCompare(b.label) || a.key.localeCompare(b.key))
+}
+
+function groupExpandedEdgesByReaction(edges: HomeGraphEdge[], referenceSourceId = edges[0]?.sourceCompoundId, referenceTargetId = edges[0]?.targetCompoundId): ExpandedEdgeGroup[] {
+  const groups = new Map<string, ExpandedEdgeGroup>()
+  edges.forEach((edge) => {
+    const reactionId = edge.reactionId || edge.edgeId
+    const key = `${canonicalCompoundPairKey(edge.sourceCompoundId, edge.targetCompoundId)}::${reactionId}`
+    const current = groups.get(key)
+    if (!current) {
+      groups.set(key, {
+        key,
+        sourceId: referenceSourceId || edge.sourceCompoundId,
+        targetId: referenceTargetId || edge.targetCompoundId,
+        enzymeId: edge.card?.enzymeId || edge.enzymeId,
+        label: reactionId,
+        directionMode: directionModeForEdges([edge], referenceSourceId, referenceTargetId),
+        edges: [edge],
+        edgeIds: [edge.edgeId],
+        reactionIds: [reactionId],
+        representative: edge,
+      })
+      return
+    }
+    const nextEdges = [...current.edges, edge]
+    current.edges = nextEdges
+    current.edgeIds = Array.from(new Set([...current.edgeIds, edge.edgeId]))
+    current.reactionIds = Array.from(new Set([...current.reactionIds, reactionId]))
+    current.directionMode = directionModeForEdges(nextEdges, current.sourceId, current.targetId)
+    if (!current.label && reactionId) current.label = reactionId
   })
 
   return [...groups.values()].sort((a, b) => a.label.localeCompare(b.label) || a.key.localeCompare(b.key))
