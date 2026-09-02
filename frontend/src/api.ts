@@ -30,6 +30,7 @@ type EnzymeCard = {
   uniprotId?: string | null
   databaseCode: string
   organismName?: string | null
+  geneName?: string | null
   ecNumber?: string | null
   reactionId: string
   reactionEquation: string
@@ -291,6 +292,7 @@ function enzymeEntity(enzyme: EnzymeCard, source?: CompoundCard, target?: Compou
       field('UniProt', enzyme.uniprotId),
       field('EC number', enzyme.ecNumber),
       field('Organism', enzyme.organismName),
+      field('Gene name', enzyme.geneName),
       field('Reaction', enzyme.reactionId),
       field('Direction', enzyme.reactionDirection),
     ].filter(Boolean) as Array<{ label: string; value: string }>,
